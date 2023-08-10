@@ -41,10 +41,9 @@ pipeline {
             steps {
                 script {
                     sshagent([cred]) {
-                        for (config in imageConfigs) {
-                            sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                                docker rmi ${imagename} || true
-                                exit
+                        sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                             docker rmi ${imagename} || true
+                             exit
                         EOF
                         """
                     }
