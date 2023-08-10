@@ -42,9 +42,9 @@ pipeline {
                     sshagent([cred]) {
                         for (imageName in imageConfigs) {
                             sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                                docker stop ${imageName} || true
-                                docker rm ${imageName} || true
-                                docker rmi ${imageName} || true
+                                docker stop ${imageName} -f || true
+                                docker rm ${imageName} -f || true
+                                docker rmi ${imageName} -f || true
                                 exit
                             EOF
                             """
