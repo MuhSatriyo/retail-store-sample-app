@@ -5,15 +5,15 @@ def dir = "~/retail-store-sample-app"
 def server = "satriyo@27.112.78.8"
 def dockerusername = "muhsatriyo"
 def imageConfigs = [
-    "mariadb",
-    "rabbitmq",
-    "public.ecr.aws/aws-containers/retail-store-sample-assets",
-    "public.ecr.aws/aws-containers/retail-store-sample-checkout",
-    "public.ecr.aws/aws-containers/retail-store-sample-orders",
-    "public.ecr.aws/aws-containers/retail-store-sample-cart",
-    "public.ecr.aws/aws-containers/retail-store-sample-catalog",
-    "public.ecr.aws/aws-containers/retail-store-sample-ui",
-    "amazon/dynamodb-local"
+    "mariadb:10.9",
+    "rabbitmq:3-management",
+    "public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-checkout:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-orders:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-cart:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-catalog:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0",
+    "amazon/dynamodb-local:1.20.0"
 ]
 
 pipeline {
