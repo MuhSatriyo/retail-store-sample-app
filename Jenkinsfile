@@ -2,7 +2,6 @@ def branch = "main"
 def repo = "https://github.com/MuhSatriyo/retail-store-sample-app.git"
 def cred = "ssh_agent"
 def dir = "~/retail-store-sample-app"
-def location = "~/retail-store-sample-app/dist/docker-compose"
 def server = "satriyo@27.112.78.8"
 def dockerusername = "muhsatriyo"
 def imageConfigs = [
@@ -43,7 +42,7 @@ pipeline {
                     sshagent([cred]) {
                         sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
 			     cd ${dir}
-                             docker rmi ${imagename} || true
+                             docker rmi ${imageConfigs} || true
                              exit
                         EOF
                         """
@@ -56,7 +55,7 @@ pipeline {
                 script {
                     sshagent([cred]) {
                         sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                             cd ${location}
+                             cd ${dir}/dist/docker-compose
                              MYSQL_PASSWORD='12345678' docker compose up -d || true
                              exit
                         EOF
