@@ -5,15 +5,15 @@ def dir = "~/retail-store-sample-app"
 def server = "satriyo@27.112.78.8"
 def dockerusername = "muhsatriyo"
 def imageConfigs = [
-    [imagename: "mariadb"],
-    [imagename: "rabbitmq"],
-    [imagename: "public.ecr.aws/aws-containers/retail-store-sample-assets"],
-    [imagename: "public.ecr.aws/aws-containers/retail-store-sample-checkout"],
-    [imagename: "public.ecr.aws/aws-containers/retail-store-sample-orders"],
-    [imagename: "public.ecr.aws/aws-containers/retail-store-sample-cart"],
-    [imagename: "public.ecr.aws/aws-containers/retail-store-sample-catalog"],
-    [imagename: "public.ecr.aws/aws-containers/retail-store-sample-ui"],
-    [imagename: "amazon/dynamodb-local"]
+    "mariadb",
+    "rabbitmq",
+    "public.ecr.aws/aws-containers/retail-store-sample-assets",
+    "public.ecr.aws/aws-containers/retail-store-sample-checkout",
+    "public.ecr.aws/aws-containers/retail-store-sample-orders",
+    "public.ecr.aws/aws-containers/retail-store-sample-cart",
+    "public.ecr.aws/aws-containers/retail-store-sample-catalog",
+    "public.ecr.aws/aws-containers/retail-store-sample-ui",
+    "amazon/dynamodb-local"
 ]
 
 pipeline {
@@ -40,12 +40,14 @@ pipeline {
             steps {
                 script {
                     sshagent([cred]) {
-                        sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-			     cd ${dir}
-                             docker rmi ${imageConfigs} || true
-                             exit
-                        EOF
-                        """
+                        for (imageName in imageConfigs) {
+                            sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                                cd ${dir}
+                                docker rmi ${imageName} || true
+                                exit
+                            EOF
+                            """
+                        }
                     }
                 }
             }
@@ -54,17 +56,18 @@ pipeline {
             steps {
                 script {
                     sshagent([cred]) {
-                        sh """
-                            ssh ${server} << EOF
-                                docker stop ${imageConfigs} || true
-                                docker rm ${imageConfigs} || true
-                                exit
-                            EOF
-                        """
+                        for (imageName in imageConfigs) {
+                            sh """
+                                ssh ${server} << EOF
+                                    docker stop ${imageName} || true
+                                    docker rm ${imageName} || true
+                                    exit
+                                EOF
+                            """
+                        }
                     }
                 }
             }
         }
-     }
+    }
 }
-
