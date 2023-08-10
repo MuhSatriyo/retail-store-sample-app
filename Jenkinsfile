@@ -42,6 +42,7 @@ pipeline {
                 script {
                     sshagent([cred]) {
                         sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+			     cd ${dir}
                              docker rmi ${imagename} || true
                              exit
                         EOF
