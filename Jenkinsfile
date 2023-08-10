@@ -54,20 +54,12 @@ pipeline {
                     sshagent([cred]) {
                         for (containerName in containerConfigs) {
                             sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                                docker stop ${imageName} -f || true
-                                docker rm ${imageName} -f || true
+                                docker stop ${containerName} -f || true
+                                docker rm ${containerName} -f || true
                                 exit
                             EOF
                             """
                         }
-                    }
-                }
-            }
-        }
-        stage('Delete Docker Resources') {
-            steps {
-                script {
-                    sshagent([cred]) {
                         for (imageName in imageConfigs) {
                             sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
                                 docker rmi ${imageName} -f || true
@@ -81,8 +73,6 @@ pipeline {
         }
     }
 }
-
-
 
 
 
