@@ -36,13 +36,14 @@ pipeline {
                 }
             }
         }
-        stage('Delete Images Before') {
+        stage('Delete Docker Resources') {
             steps {
                 script {
                     sshagent([cred]) {
                         for (imageName in imageConfigs) {
                             sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                                cd ${dir}
+                                docker stop ${imageName} || true
+                                docker rm ${imageName} || true
                                 docker rmi ${imageName} || true
                                 exit
                             EOF
@@ -52,22 +53,10 @@ pipeline {
                 }
             }
         }
-        stage('Delete Docker Container') {
-            steps {
-                script {
-                    sshagent([cred]) {
-                        for (imageName in imageConfigs) {
-                            sh """
-                                ssh ${server} << EOF
-                                    docker stop ${imageName} || true
-                                    docker rm ${imageName} || true
-                                    exit
-                                EOF
-                            """
-                        }
-                    }
-                }
-            }
-        }
     }
 }
+
+
+
+
+
