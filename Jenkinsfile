@@ -15,6 +15,18 @@ def imageConfigs = [
     "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0",
     "amazon/dynamodb-local:1.20.0"
 ]
+def containerConfigs = [
+    "docker-compose-rabbitmq-1"
+    "docker-compose-catalog-db-1"
+    "docker-compose-catalog-1"
+    "docker-compose-orders-db-1"
+    "docker-compose-checkout-redis-1"
+    "docker-compose-orders-1"
+    "docker-compose-ui-1"
+    " docker-compose-assets-1"
+    "docker-compose-carts-1
+    "docker-compose-checkout-1"
+    "docker-compose-carts-db-1
 
 pipeline {
     agent any
@@ -40,10 +52,24 @@ pipeline {
             steps {
                 script {
                     sshagent([cred]) {
-                        for (imageName in imageConfigs) {
+                        for (containerName in containerConfigs) {
                             sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
                                 docker stop ${imageName} -f || true
                                 docker rm ${imageName} -f || true
+                                exit
+                            EOF
+                            """
+                        }
+                    }
+                }
+            }
+        }
+        stage('Delete Docker Resources') {
+            steps {
+                script {
+                    sshagent([cred]) {
+                        for (imageName in imageConfigs) {
+                            sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
                                 docker rmi ${imageName} -f || true
                                 exit
                             EOF
