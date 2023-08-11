@@ -4,17 +4,6 @@ def cred = "ssh_agent"
 def dir = "~/retail-store-sample-app"
 def server = "satriyo@27.112.78.8"
 def dockerusername = "muhsatriyo"
-def imageConfigs = [
-    "mariadb:10.9",
-    "rabbitmq:3-management",
-    "public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0",
-    "public.ecr.aws/aws-containers/retail-store-sample-checkout:0.4.0",
-    "public.ecr.aws/aws-containers/retail-store-sample-orders:0.4.0",
-    "public.ecr.aws/aws-containers/retail-store-sample-cart:0.4.0",
-    "public.ecr.aws/aws-containers/retail-store-sample-catalog:0.4.0",
-    "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0",
-    "amazon/dynamodb-local:1.20.0"
-]
 def containerConfigs = [
     "docker-compose-rabbitmq-1"
     "docker-compose-catalog-db-1"
@@ -27,7 +16,7 @@ def containerConfigs = [
     "docker-compose-carts-1
     "docker-compose-checkout-1"
     "docker-compose-carts-db-1
-
+]
 pipeline {
     agent any
     stages {
@@ -60,13 +49,6 @@ pipeline {
                             EOF
                             """
                         }
-                        for (imageName in imageConfigs) {
-                            sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                                docker rmi ${imageName} -f || true
-                                exit
-                            EOF
-                            """
-                        }
                     }
                 }
             }
@@ -74,5 +56,44 @@ pipeline {
     }
 }
 
+```
+def branch = "main"
+def repo = "https://github.com/MuhSatriyo/retail-store-sample-app.git"
+def cred = "ssh_agent"
+def dir = "~/retail-store-sample-app"
+def server = "satriyo@27.112.78.8"
+def dockerusername = "muhsatriyo"
+def imageConfigs = [
+    "mariadb:10.9",
+    "rabbitmq:3-management",
+    "public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-checkout:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-orders:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-cart:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-catalog:0.4.0",
+    "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0",
+    "amazon/dynamodb-local:1.20.0"
+]
 
-
+pipeline {
+    agent any
+    stages {
+        stage('Repo pull') {
+            steps {
+                script {
+                    sshagent(credentials: [cred]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no -T ${server} << EOF
+                            for (imageName in imageConfigs) {
+                            sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                                docker rmi ${imageName} -f || true
+                                exit
+                            EOF
+                            """
+                        }
+		    }
+	        }
+            }
+        }
+    }
+}
