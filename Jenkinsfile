@@ -55,7 +55,6 @@ pipeline {
                     sshagent([cred]) {
                         for (containerName in containerConfigs) {
                             sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                                docker-compose -f ${dir}/${containerName}.yml down -v
                                 docker stop ${containerName} -f || true
                                 docker rm ${containerName} -f || true
                                 exit
