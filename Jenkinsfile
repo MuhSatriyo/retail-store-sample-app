@@ -13,7 +13,7 @@ def containerConfigs = [
     "docker-compose-orders-1",
     "docker-compose-ui-1",
     "docker-compose-assets-1",
-    "docker-compose-carts-1,
+    "docker-compose-carts-1",
     "docker-compose-checkout-1",
     "docker-compose-carts-db-1"
 ]
