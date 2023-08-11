@@ -80,5 +80,19 @@ pipeline {
                 }
             }
         }
-    }
+        stage('Build Docker Images and running on container') {
+            steps {
+                script {
+                    sshagent([cred]) {
+                        sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                             cd ${dir}/dist/docker-compose
+                             MYSQL_PASSWORD='12345678' docker compose up -d || true
+                             exit
+                        EOF
+                        """
+                        }
+                    }
+               }
+          }
+     }
 }
