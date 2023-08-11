@@ -43,8 +43,7 @@ pipeline {
                     sshagent([cred]) {
                         for (containerName in containerConfigs) {
                             sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
-                                docker stop ${containerName} -f || true
-                                docker rm ${containerName} -f || true
+                                docker-compose -f ${dir}/${containerName}.yml down -v
                                 exit
                             EOF
                             """
@@ -55,7 +54,6 @@ pipeline {
         }
     }
 }
-
 ```
 def branch = "main"
 def repo = "https://github.com/MuhSatriyo/retail-store-sample-app.git"
